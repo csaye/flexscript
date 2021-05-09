@@ -1,10 +1,19 @@
 import re
 
+# regex
+ws = '\s*' # optional whitespace
+name = '[a-zA-Z][a-zA-Z0-9]*' # variable name
+any0 = '.*' # optional any character
+any1 = '.+' # any character
+
 actions = {
-    '[a-zA-Z][a-zA-Z0-9]*\s*\(.*\)\s*;': 'function-call',
-    '[a-zA-Z][a-zA-Z0-9]*\s*=\s*.+\s*;': 'var-assign'
+    f'{name}{ws}\({any0}\){ws};': 'function-call',
+    f'{name}{ws}{name}{ws}={ws}{any1}{ws};': 'var-set',
+    f'{name}{ws}={ws}{any1}{ws};': 'var-update',
+    f'#{any0}\n': 'comment'
 }
 
+# command class
 class Command:
 
     def __init__(self, type, args):
@@ -42,16 +51,24 @@ def split(string, chars):
 
 # returns list of arguments for given command type
 def get_args(type, string):
+
     args = []
 
-    if (type == 'function-call'):
+    if type == 'function-call':
         sides = split(string, '();') # get out and in of function
         args.append(sides[0].strip()) # append function name
         terms = split(sides[1], ',') # split inside
         for term in terms: args.append(term.strip()) # append stripped terms
-    elif (type == 'var-assign'):
+    elif type == 'var-set':
+        sides = split(string, '=;') # get both sides of assignment
+        args = split(sides[0], ' ') # split left side by space
+        args.append(sides[1].strip()) # append end term
+    elif type == 'var-update':
         sides = split(string, '=;') # get both sides of assignment
         args = [side.strip() for side in sides] # strip args
+    elif type == 'comment':
+        content = string[1:].strip() # get comment content
+        args.append(content) # append content
 
     return args
 
@@ -91,7 +108,7 @@ def parse(program):
 
             # throw error and return
             print('error: unrecognized statement')
-            print(string.strip())
+            print(clean_string)
             return
 
     return commands
