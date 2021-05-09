@@ -1,8 +1,25 @@
 # FlexScript
 
-A programming language which can compile into multiple languages.
+<img width="448px" src="https://user-images.githubusercontent.com/27871609/117590506-0c98a480-b0ed-11eb-9699-ecc3353e6a8b.png">
+
+A programming language which compiles into multiple languages.
 
 Currently supports Python, JavaScript, C#, Java, and C++.
+
+## Installation/Compilation
+
+In order to install FlexScript, clone the project:
+
+```bash
+git clone https://github.com/csaye/flexscript
+cd flexscript/
+```
+
+Then compile your .flex file like so:
+
+```
+./compile.sh <program.flex> <py | js | cs | java | cpp | all>
+```
 
 ## Comments
 
