@@ -2,7 +2,7 @@
 
 <img width="448px" src="https://user-images.githubusercontent.com/27871609/117590506-0c98a480-b0ed-11eb-9699-ecc3353e6a8b.png">
 
-A programming language which compiles into multiple languages.
+A programming language that compiles into multiple languages.
 
 Currently supports Python, JavaScript, C#, Java, and C++.
 

@@ -1,3 +1,8 @@
+def get_vartype(vartype):
+    if vartype == 'string': return 'String'
+    elif vartype == 'bool': return 'boolean'
+    else: return vartype
+
 def compile_java(outpath, commands):
 
     program = ''
@@ -24,14 +29,12 @@ def compile_java(outpath, commands):
                 program += f'System.out.println({args[1]});'
             else:
                 program += f'{function}({", ".join(args[1:])});'
+        elif type == 'var-create':
+            vartype = get_vartype(args[0])
+            program += f'{vartype} {args[1]};'
         elif type == 'var-set':
-            vartype = args[0]
-            if vartype == 'string':
-                program += f'String {args[1]} = {args[2]};'
-            elif vartype == 'bool':
-                program += f'boolean {args[1]} = {args[2]};'
-            else:
-                program += f'{vartype} {args[1]} = {args[2]};'
+            vartype = get_vartype(args[0])
+            program += f'{vartype} {args[1]} = {args[2]};'
         elif type == 'var-update':
             program += f'{args[0]} = {args[1]};'
         elif type == 'comment':

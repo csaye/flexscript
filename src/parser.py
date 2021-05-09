@@ -8,6 +8,7 @@ any1 = '.+' # any character
 
 actions = {
     f'{name}{ws}\({any0}\){ws};': 'function-call',
+    f'{name}{ws}{name}{ws};': 'var-create',
     f'{name}{ws}{name}{ws}={ws}{any1}{ws};': 'var-set',
     f'{name}{ws}={ws}{any1}{ws};': 'var-update',
     f'#{any0}\n': 'comment'
@@ -68,6 +69,8 @@ def get_args(type, string):
         args.append(sides[0].strip()) # append function name
         terms = split(sides[1], ',') # split inside
         for term in terms: args.append(term.strip()) # append stripped terms
+    elif type == 'var-create':
+        args = split(string, '; ') # split terms by semicolon and whitespace
     elif type == 'var-set':
         sides = split(string, '=;') # get both sides of assignment
         args = split(sides[0], ' ') # split left side by space

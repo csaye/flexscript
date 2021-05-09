@@ -1,3 +1,7 @@
+def get_vartype(vartype):
+    if vartype == 'string': return 'std::string'
+    else: return vartype
+
 def compile_cpp(outpath, commands):
 
     program = ''
@@ -30,12 +34,12 @@ def compile_cpp(outpath, commands):
                 program += f'std::cout << {args[1]} << std::endl;'
             else:
                 program += f'{args[0]}({", ".join(args[1:])});'
+        elif type == 'var-create':
+            vartype = get_vartype(args[0])
+            program += f'{vartype} {args[1]};'
         elif type == 'var-set':
-            vartype = args[0]
-            if vartype == 'string':
-                program += f'std::string {args[1]} = {args[2]};'
-            else:
-                program += f'{vartype} {args[1]} = {args[2]};'
+            vartype = get_vartype(args[0])
+            program += f'{vartype} {args[1]} = {args[2]};'
         elif type == 'var-update':
             program += f'{args[0]} = {args[1]};'
         elif type == 'comment':

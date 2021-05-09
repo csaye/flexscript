@@ -17,7 +17,7 @@ def compile_js(outpath, commands):
         elif type == 'comment':
             program += f'// {args[0]}'
 
-        program += '\n';
+        if type != 'var-create': program += '\n'; # newline
 
     # write program to file
     file = open(outpath, 'w')

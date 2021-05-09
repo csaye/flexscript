@@ -34,6 +34,8 @@ def compile_cs(outpath, commands):
                 program += f'Console.WriteLine({args[1]});'
             else:
                 program += f'{upper(args[0])}({", ".join(args[1:])});'
+        elif type == 'var-create':
+            program += f'{args[0]} {args[1]};'
         elif type == 'var-set':
             program += f'{args[0]} {args[1]} = {args[2]};'
         elif type == 'var-update':
