@@ -23,9 +23,15 @@ def compile_java(outpath, commands):
             if function == 'print':
                 program += f'System.out.println({args[1]});'
             else:
-                program += f'{args[0]}({", ".join(args[1:])});'
+                program += f'{function}({", ".join(args[1:])});'
         elif type == 'var-set':
-            program += f'{args[0]} {args[1]} = {args[2]};'
+            vartype = args[0]
+            if vartype == 'string':
+                program += f'String {args[1]} = {args[2]};'
+            elif vartype == 'bool':
+                program += f'boolean {args[1]} = {args[2]};'
+            else:
+                program += f'{vartype} {args[1]} = {args[2]};'
         elif type == 'var-update':
             program += f'{args[0]} = {args[1]};'
         elif type == 'comment':

@@ -6,7 +6,7 @@ def compile_cpp(outpath, commands):
     # get import statements
     for command in commands:
         if command.type == 'function-call' and command.args[0] == 'print':
-            program += 'using System;\n\n'
+            program += '#include <iostream>\n\n'
             break
 
     # open class
@@ -31,7 +31,11 @@ def compile_cpp(outpath, commands):
             else:
                 program += f'{args[0]}({", ".join(args[1:])});'
         elif type == 'var-set':
-            program += f'{args[0]} {args[1]} = {args[2]};'
+            vartype = args[0]
+            if vartype == 'string':
+                program += f'std::string {args[1]} = {args[2]};'
+            else:
+                program += f'{vartype} {args[1]} = {args[2]};'
         elif type == 'var-update':
             program += f'{args[0]} = {args[1]};'
         elif type == 'comment':

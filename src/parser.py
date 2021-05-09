@@ -27,13 +27,22 @@ class Command:
 def split(string, chars):
 
     in_string = False
+    double_quote = False
     term = ''
     terms = []
     i = 0
 
     for char in string: # for each character
 
-        if char == '"': in_string = not in_string # toggle in string
+        # toggle in string
+        if in_string:
+            if ((char == '"' and double_quote)
+            or (char == "'" and not double_quote)):
+                in_string = False
+        else:
+            if char == '"' or char == "'":
+                double_quote = char == '"'
+                in_string = True
 
         if not in_string: # if not in string
             if char not in chars: term += char # append if not split char
@@ -92,7 +101,7 @@ def parse(program):
         for action in actions:
 
             # if string matches action
-            if re.match(action, clean_string):
+            if re.match(f'{ws}{action}{ws}', string):
 
                 type = actions[action] # get command type
                 args = get_args(type, clean_string) # get command arguments
@@ -110,5 +119,12 @@ def parse(program):
             print('error: unrecognized statement')
             print(clean_string)
             return
+
+        # if newline
+        if string.endswith('\n\n'):
+
+            # append newline command
+            command = Command('newline', [])
+            commands.append(command)
 
     return commands
