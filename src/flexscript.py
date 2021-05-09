@@ -2,6 +2,7 @@
 import sys, os
 from compile_py import compile_py
 from compile_js import compile_js
+from parser import parse
 
 # returns whether file exists at given path
 def file_exists(path): return os.path.exists(path)
@@ -37,9 +38,6 @@ if not path.endswith('.flex') or not file_exists(path):
     print(f'usage: ./compile.sh <program.flex> <{" | ".join(compilers)}>')
     sys.exit()
 
-# get program name
-name = file_name(path[:-5])
-
 # if no output type given
 if len(args) < 3:
 
@@ -64,5 +62,7 @@ file = open(path, 'r')
 program = file.read()
 file.close()
 
-# compile program
-compilers[output](program)
+commands = parse(program) # parse commands
+if not commands: sys.exit() # if could not parse, exit
+outpath = f'{path[:-5]}.{output}' # get program outpath
+compilers[output](outpath, commands) # compile commands to outpath
