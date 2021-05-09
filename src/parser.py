@@ -1,3 +1,5 @@
+import re
+
 actions = {
     '[a-zA-Z][a-zA-Z0-9]*\s*\(.*\)\s*;': 'function-call',
     '[a-zA-Z][a-zA-Z0-9]*\s*=\s*.+\s*;': 'var-assign'
@@ -57,5 +59,39 @@ def get_args(type, string):
 def parse(program):
 
     commands = []
+
+    # for each character in program
+    in_string = False
+    string = ''
+    for char in program:
+
+        # toggle in string
+        if char == '"': in_string = not in_string
+
+        string += char # build string
+        clean_string = string.strip() # strip string
+
+        # for each action
+        for action in actions:
+
+            # if string matches action
+            if re.match(action, clean_string):
+
+                type = actions[action] # get command type
+                args = get_args(type, clean_string) # get command arguments
+
+                command = Command(type, args) # create command
+                commands.append(command) # append command
+                string = '' # reset string
+
+                break # do not take any other actions
+
+        # if semicolon on invalid statement
+        if not in_string and char == ';' and string != '':
+
+            # throw error and return
+            print('error: unrecognized statement')
+            print(string.strip())
+            return
 
     return commands
