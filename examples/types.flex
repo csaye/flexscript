@@ -1,3 +1,4 @@
+#_MAIN
 int a = 1;
 double b = 0.5;
 char c = 'a';

@@ -1,3 +1,4 @@
+#_MAIN
 for (int i = 1; i < 101; i++)
 {
     string output = "";

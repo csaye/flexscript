@@ -1,3 +1,4 @@
+#_MAIN
 for (int i = 2; i < 100; i++)
 {
     bool prime = true;
