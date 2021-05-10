@@ -30,6 +30,8 @@ def compile_js(outpath, commands):
         elif type == 'statement-args':
             statement = get_statement(args[0])
             program += f'{statement} ({args[1]})'
+        elif type == 'statement-for':
+            program += f'for ({args[0]} = {args[1]}; {args[0]} < {args[2]}; {args[0]}++)'
         elif type == 'statement-else': program += 'else'
         elif type == 'bracket-start':
             program += '{'

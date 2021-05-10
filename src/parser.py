@@ -1,20 +1,23 @@
 import re
 
 # regex
-ws = '\s*' # optional whitespace
+s0 = '\s*' # optional whitespace
+s1 = '\s+' # whitespace
 name = '[a-zA-Z][a-zA-Z0-9]*' # variable name
+num = '[0-9][0-9]*' # number
 any0 = '.*' # optional any character
 any1 = '.+' # any character
 modo = '(=|\+=|-=|\*=|\/=|%=)' # modification operators
 
 actions = {
-    f'{name}{ws}\({any0}\){ws};': 'function-call',
-    f'{name}{ws}{name}{ws};': 'var-create',
-    f'{name}{ws}{name}{ws}={ws}{any1}{ws};': 'var-set',
-    f'{name}{ws}{modo}{ws}{any1}{ws};': 'var-update',
+    f'{name}{s0}\({any0}\){s0};': 'function-call',
+    f'{name}{s1}{name}{s0};': 'var-create',
+    f'{name}{s1}{name}{s0}={any1};': 'var-set',
+    f'{name}{s0}{modo}{any1};': 'var-update',
     f'#{any0}\n': 'comment',
-    f'(if|for|elif|while){ws}\({any1}\)': 'statement-args',
-    f'else': 'statement-else',
+    f'(if|elif|while){s0}\({any1}\)': 'statement-args',
+    f'for{s0}\(int{s1}{name}{s0}={s0}{num}{s0};{s0}{name}{s0}<{s0}{num}{s0};{s0}{name}\+\+{s0}\)': 'statement-for',
+    'else': 'statement-else',
     '{': 'bracket-start',
     '}': 'bracket-end'
 }
@@ -92,6 +95,14 @@ def get_args(type, string):
     elif type == 'statement-args':
         sides = split(string, '();') # separate statement from content
         args = [side.strip() for side in sides] # strip sides
+    elif type == 'statement-for':
+        sides = split(string, '()') # split for from content
+        content = sides[1].strip() # get content
+        varname = split(content, ' ')[1] # get varname
+        args.append(varname) # append varname
+        terms = split(content, '=<; ') # split inside
+        args.append(terms[2]) # append lower bound
+        args.append(terms[4]) # append upper bound
 
     return args
 
@@ -102,20 +113,29 @@ def parse(program):
 
     # for each character in program
     in_string = False
+    double_quote = False
     string = ''
     for char in program:
 
         # toggle in string
-        if char == '"': in_string = not in_string
+        if in_string:
+            if ((char == '"' and double_quote)
+            or (char == "'" and not double_quote)):
+                in_string = False
+        else:
+            if char == '"' or char == "'":
+                double_quote = char == '"'
+                in_string = True
 
         string += char # build string
+        if in_string: continue # skip if in string
         clean_string = string.strip() # strip string
 
         # for each action
         for action in actions:
 
             # if string matches action
-            if re.match(f'{ws}{action}{ws}', string):
+            if re.match(f'^{s0}{action}{s0}$', string):
 
                 type = actions[action] # get command type
                 args = get_args(type, clean_string) # get command arguments
@@ -125,14 +145,6 @@ def parse(program):
                 string = '' # reset string
 
                 break # do not take any other actions
-
-        # if semicolon on invalid statement
-        if not in_string and char == ';' and string != '':
-
-            # throw error and return
-            print('error: unrecognized statement')
-            print(clean_string)
-            return
 
         # if newline
         if string.endswith('\n\n'):
