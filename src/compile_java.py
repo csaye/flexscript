@@ -7,6 +7,10 @@ def get_function(function):
     if function == 'print': return 'System.out.println'
     else: return function
 
+def get_statement(statement):
+    if statement == 'elif': return 'else if'
+    else: return statement
+
 def compile_java(outpath, commands):
 
     program = ''
@@ -39,7 +43,9 @@ def compile_java(outpath, commands):
             program += f'{vartype} {args[1]} = {args[2]};'
         elif type == 'var-update': program += f'{" ".join(args)};'
         elif type == 'comment': program += f'// {args[0]}'
-        elif type == 'statement-args': program += f'{args[0]} ({args[1]})'
+        elif type == 'statement-args':
+            statement = get_statement(args[0])
+            program += f'{statement} ({args[1]})'
         elif type == 'statement-else': program += 'else'
         elif type == 'bracket-start':
             program += '{'

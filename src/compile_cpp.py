@@ -2,6 +2,10 @@ def get_vartype(vartype):
     if vartype == 'string': return 'std::string'
     else: return vartype
 
+def get_statement(statement):
+    if statement == 'elif': return 'else if'
+    else: return statement
+
 def compile_cpp(outpath, commands):
 
     program = ''
@@ -43,7 +47,9 @@ def compile_cpp(outpath, commands):
             program += f'{vartype} {args[1]} = {args[2]};'
         elif type == 'var-update': program += f'{" ".join(args)};'
         elif type == 'comment': program += f'// {args[0]}'
-        elif type == 'statement-args': program += f'{args[0]} ({args[1]})'
+        elif type == 'statement-args':
+            statement = get_statement(args[0])
+            program += f'{statement} ({args[1]})'
         elif type == 'statement-else': program += 'else'
         elif type == 'bracket-start':
             program += '{'

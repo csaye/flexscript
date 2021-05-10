@@ -68,6 +68,8 @@ file.close()
 commands = parse(program) # parse commands
 if commands == None: sys.exit() # if could not parse, exit
 
+for command in commands: print(f'{command.type} {command.args}') # debug
+
 if output == 'all': # compile all
     for out in compilers: # for each compiler
         outpath = f'{path[:-5]}.{out}' # get program outpath
