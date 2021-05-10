@@ -53,6 +53,70 @@ string d = "Hello World";
 bool e = false;
 ```
 
+## Conditional Statements
+
+Conditional statements are written in the form `statement (condition) {}`.
+
+`while` statements:
+```cs
+int i = 0;
+
+while (i < 10)
+{
+    print(i);
+    i += 1;
+}
+```
+
+`if/elif/else` statements:
+```py
+if (false)
+{
+    print("false");
+}
+elif (false)
+{
+    print("false");
+}
+else
+{
+    print("true");
+}
+```
+
 ## Examples
 
-Examples can be found in the [examples folder](examples).
+`FizzBuzz.flex`
+
+Prints numbers 1 to 100 (inclusive) to the console, replacing every multiple of 3 with "Fizz", every multiple of 5 with "Buzz", and every multiple of both with "FizzBuzz".
+
+```cs
+int i = 1;
+
+while (i <= 100)
+{
+    string output = "";
+
+    if (i % 3 == 0)
+    {
+        output += "Fizz";
+    }
+    if (i % 5 == 0)
+    {
+        output += "Buzz";
+    }
+
+    if (output == "")
+    {
+        print(i);
+    }
+    else
+    {
+        print(output);
+    }
+
+    i += 1;
+}
+```
+
+More examples can be found in the [examples folder](examples).
