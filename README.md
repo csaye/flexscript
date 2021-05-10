@@ -23,21 +23,19 @@ Then compile your .flex file like so:
 
 ## Comments
 
-Comments are written with hashtags and translated to all languages.
+Comments are written with hashtags and translated to all languages:
 
 ```py
 # this is a comment
 ```
 
-## Functions
-
-Function calls are written in `function();` syntax with any arguments separated by commas.
-
-The `print` function is built-in and supported for all languages:
+If a comment begins with an underscore, it is parsed as a declaration:
 
 ```cs
-print("Hello World");
+#_MAIN
 ```
+
+`#_MAIN` is used once to define where global class declarations end.
 
 ## Variables
 
@@ -51,6 +49,28 @@ double b = 0.5;
 char c = 'a';
 string d = "Hello World";
 bool e = false;
+```
+
+## Functions
+
+Function calls are written in `function();` syntax with any arguments separated by commas.
+
+The `print` function is built-in and supported for all languages:
+
+```cs
+print("Hello World");
+```
+
+Function definitions are written in `type function() {}` syntax and should be done before `#_MAIN`:
+
+```cs
+void helloworld()
+{
+    print("Hello World");
+}
+
+#_MAIN
+helloworld();
 ```
 
 ## Conditional Statements
@@ -102,6 +122,7 @@ else
 Prints the first 10 numbers of the Fibonacci sequence to the console.
 
 ```cs
+#_MAIN
 int a = -1;
 int b = 1;
 
@@ -119,6 +140,7 @@ for (int i = 0; i < 10; i++)
 Prints numbers 1 to 100 (inclusive) to the console, replacing every multiple of 3 with "Fizz", every multiple of 5 with "Buzz", and every multiple of both with "FizzBuzz".
 
 ```cs
+#_MAIN
 for (int i = 1; i < 101; i++)
 {
     string output = "";
@@ -148,6 +170,7 @@ for (int i = 1; i < 101; i++)
 Prints all prime numbers up to 100 to the console.
 
 ```cs
+#_MAIN
 for (int i = 2; i < 100; i++)
 {
     bool prime = true;
