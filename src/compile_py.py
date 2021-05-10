@@ -18,8 +18,7 @@ def compile_py(outpath, commands):
         ]
 
         # append spacing
-        if type != 'bracket-end': program += '    ' * spaces
-        else: program += '    ' * (spaces - 1)
+        if type not in skip_types: program += '    ' * spaces
 
         if type == 'function-call':
             program += f'{args[0]}({", ".join(args[1:])})'
