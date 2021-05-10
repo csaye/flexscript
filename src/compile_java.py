@@ -1,3 +1,5 @@
+skip_types = ['declaration']
+
 def get_vartype(vartype):
     if vartype == 'string': return 'String'
     elif vartype == 'bool': return 'boolean'
@@ -17,9 +19,9 @@ def compile_java(outpath, commands):
     spaces = 0
 
     # open class
-    program += 'public class Main {\n'
-    program += '    public static void main(String[] args) {\n'
-    spaces = 2
+    program += 'public class Main\n'
+    program += '{\n'
+    spaces += 1
 
     # for each command
     for command in commands:
@@ -29,10 +31,12 @@ def compile_java(outpath, commands):
         args = command.args
 
         # append spacing
-        if type != 'bracket-end': program += '    ' * spaces
-        else: program += '    ' * (spaces - 1)
+        if type == 'bracket-end': program += '    ' * (spaces - 1)
+        elif type not in skip_types: program += '    ' * spaces
 
-        if type == 'function-call':
+        if type == 'function-def':
+            program += f'static {args[0]} {args[1]}({", ".join(args[2:])})'
+        elif type == 'function-call':
             function = get_function(args[0])
             program += f'{function}({", ".join(args[1:])});'
         elif type == 'var-create':
@@ -43,6 +47,11 @@ def compile_java(outpath, commands):
             program += f'{vartype} {args[1]} = {args[2]};'
         elif type == 'var-update': program += f'{" ".join(args)};'
         elif type == 'comment': program += f'// {args[0]}'
+        elif type == 'declaration':
+            if args[0] == 'MAIN':
+                program += '    public static void main(String[] args)\n'
+                program += '    {\n'
+                spaces += 1
         elif type == 'statement-args':
             statement = get_statement(args[0])
             program += f'{statement} ({args[1]})'
@@ -56,10 +65,10 @@ def compile_java(outpath, commands):
             program += '}'
             spaces -= 1
 
-        program += '\n'
+        if type not in skip_types: program += '\n' # newline
 
     # close class
-    program += '    }\n'
+    if spaces > 1: program += '    }\n'
     program += '}\n'
 
     # write program to file

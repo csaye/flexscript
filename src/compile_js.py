@@ -1,3 +1,5 @@
+skip_types = ['var-create', 'declaration']
+
 def get_function(function):
     if function == 'print': return 'console.log'
     else: return function
@@ -18,10 +20,12 @@ def compile_js(outpath, commands):
         args = command.args
 
         # append spacing
-        if type != 'bracket-end': program += '    ' * spaces
-        else: program += '    ' * (spaces - 1)
+        if type == 'bracket-end': program += '    ' * (spaces - 1)
+        elif type not in skip_types: program += '    ' * spaces
 
-        if type == 'function-call':
+        if type == 'function-def':
+            program += f'{args[1]}({", ".join(args[2:])})'
+        elif type == 'function-call':
             function = get_function(args[0])
             program += f'{function}({", ".join(args[1:])});'
         elif type == 'var-set': program += f'{args[1]} = {args[2]};'
@@ -40,7 +44,7 @@ def compile_js(outpath, commands):
             program += '}'
             spaces -= 1
 
-        if type != 'var-create': program += '\n'; # newline
+        if type not in skip_types: program += '\n'; # newline
 
     # write program to file
     file = open(outpath, 'w')

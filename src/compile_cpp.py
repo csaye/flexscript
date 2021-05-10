@@ -1,3 +1,5 @@
+skip_types = ['declaration']
+
 def get_vartype(vartype):
     if vartype == 'string': return 'std::string'
     else: return vartype
@@ -17,11 +19,6 @@ def compile_cpp(outpath, commands):
             program += '#include <iostream>\n\n'
             break
 
-    # open class
-    program += 'int main()\n'
-    program += '{\n'
-    spaces = 1
-
     # for each command
     for command in commands:
 
@@ -30,10 +27,12 @@ def compile_cpp(outpath, commands):
         args = command.args
 
         # append spacing
-        if type != 'bracket-end': program += '    ' * spaces
-        else: program += '    ' * (spaces - 1)
+        if type == 'bracket-end': program += '    ' * (spaces - 1)
+        elif type not in skip_types: program += '    ' * spaces
 
-        if type == 'function-call':
+        if type == 'function-def':
+            program += f'{args[0]} {args[1]}({", ".join(args[2:])})'
+        elif type == 'function-call':
             function = args[0]
             if function == 'print':
                 program += f'std::cout << {args[1]} << std::endl;'
@@ -47,6 +46,11 @@ def compile_cpp(outpath, commands):
             program += f'{vartype} {args[1]} = {args[2]};'
         elif type == 'var-update': program += f'{" ".join(args)};'
         elif type == 'comment': program += f'// {args[0]}'
+        elif type == 'declaration':
+            if args[0] == 'MAIN':
+                program += 'int main()\n'
+                program += '{\n'
+                spaces += 1
         elif type == 'statement-args':
             statement = get_statement(args[0])
             program += f'{statement} ({args[1]})'
@@ -60,10 +64,10 @@ def compile_cpp(outpath, commands):
             program += '}'
             spaces -= 1
 
-        program += '\n'
+        if type not in skip_types: program += '\n' # newline
 
     # close class
-    program += '}\n'
+    if spaces > 0: program += '}\n'
 
     # write program to file
     file = open(outpath, 'w')

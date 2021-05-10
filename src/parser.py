@@ -9,11 +9,13 @@ any1 = '.+' # any character
 modo = '(=|\+=|-=|\*=|\/=|%=)' # modification operators
 
 actions = {
+    f'{name}{s1}{name}{s0}\({any0}\){s0}\n': 'function-def',
     f'{name}{s0}\({any0}\){s0};': 'function-call',
     f'{name}{s1}{name}{s0};': 'var-create',
     f'{name}{s1}{name}{s0}={any1};': 'var-set',
     f'{name}{s0}{modo}{any1};': 'var-update',
-    f'#{any0}\n': 'comment',
+    f'(#|#[^_]{any0})\n': 'comment',
+    f'#_{any0}\n': 'declaration',
     f'(if|elif|while){s0}\({any1}\)': 'statement-args',
     f'for{s0}\(int{s1}{name}{s0}={s0}{any1}{s0};{s0}{name}{s0}<{s0}{any1}{s0};{s0}{name}\+\+{s0}\)': 'statement-for',
     'else': 'statement-else',
@@ -71,11 +73,19 @@ def get_args(type, string):
 
     args = []
 
-    if type == 'function-call':
+    if type == 'function-def':
+        string = string.strip() # strip string
+        sides = split(string, '()') # separate sides
+        args = split(sides[0].strip(), ' ') # append function type and name
+        if len(sides) > 1:
+            terms = split(sides[1], ',') # split inside
+            for term in terms: args.append(term.strip()) # append stripped terms
+    elif type == 'function-call':
         sides = split(string, '();') # get out and in of function
         args.append(sides[0].strip()) # append function name
-        terms = split(sides[1], ',') # split inside
-        for term in terms: args.append(term.strip()) # append stripped terms
+        if len(sides) > 1:
+            terms = split(sides[1], ',') # split inside
+            for term in terms: args.append(term.strip()) # append stripped terms
     elif type == 'var-create':
         args = split(string, '; ') # split terms by semicolon and whitespace
     elif type == 'var-set':
@@ -90,6 +100,9 @@ def get_args(type, string):
         args.append(sides[1].strip()) # strip right side
     elif type == 'comment':
         content = string[1:].strip() # get comment content
+        args.append(content) # append content
+    elif type == 'declaration':
+        content = string[2:].strip() # get declaration content
         args.append(content) # append content
     elif type == 'statement-args':
         sides = split(string, '();') # separate statement from content

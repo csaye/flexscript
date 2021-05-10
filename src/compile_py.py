@@ -1,4 +1,4 @@
-skip_types = ['var-create', 'bracket-start', 'bracket-end']
+skip_types = ['var-create', 'bracket-start', 'bracket-end', 'declaration']
 
 def compile_py(outpath, commands):
 
@@ -20,7 +20,9 @@ def compile_py(outpath, commands):
         # append spacing
         if type not in skip_types: program += '    ' * spaces
 
-        if type == 'function-call':
+        if type == 'function-def':
+            program += f'def {args[1]}({", ".join(args[2:])}):'
+        elif type == 'function-call':
             program += f'{args[0]}({", ".join(args[1:])})'
         elif type == 'var-set': program += f'{args[1]} = {args[2]}'
         elif type == 'var-update': program += ' '.join(args)
