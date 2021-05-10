@@ -4,8 +4,8 @@ c = 'a';
 d = "Hello World";
 e = false;
 
-print(a);
-print(b);
-print(c);
-print(d);
-print(e);
+console.log(a);
+console.log(b);
+console.log(c);
+console.log(d);
+console.log(e);

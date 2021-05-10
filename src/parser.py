@@ -5,13 +5,18 @@ ws = '\s*' # optional whitespace
 name = '[a-zA-Z][a-zA-Z0-9]*' # variable name
 any0 = '.*' # optional any character
 any1 = '.+' # any character
+modo = '(=|\+=|-=|\*=|\/=|%=)' # modification operators
 
 actions = {
     f'{name}{ws}\({any0}\){ws};': 'function-call',
     f'{name}{ws}{name}{ws};': 'var-create',
     f'{name}{ws}{name}{ws}={ws}{any1}{ws};': 'var-set',
-    f'{name}{ws}={ws}{any1}{ws};': 'var-update',
-    f'#{any0}\n': 'comment'
+    f'{name}{ws}{modo}{ws}{any1}{ws};': 'var-update',
+    f'#{any0}\n': 'comment',
+    f'(if|for|elif|while){ws}\({any1}\)': 'statement-args',
+    f'else': 'statement-else',
+    '{': 'bracket-start',
+    '}': 'bracket-end'
 }
 
 # command class
@@ -76,11 +81,17 @@ def get_args(type, string):
         args = split(sides[0], ' ') # split left side by space
         args.append(sides[1].strip()) # append end term
     elif type == 'var-update':
-        sides = split(string, '=;') # get both sides of assignment
-        args = [side.strip() for side in sides] # strip args
+        op = split(string, ' ')[1] # get operator
+        sides = split(string, ';=+-*/%') # get both sides of assignment
+        args.append(sides[0].strip()) # strip left side
+        args.append(op) # append operator
+        args.append(sides[1].strip()) # strip right side
     elif type == 'comment':
         content = string[1:].strip() # get comment content
         args.append(content) # append content
+    elif type == 'statement-args':
+        sides = split(string, '();') # separate statement from content
+        args = [side.strip() for side in sides] # strip sides
 
     return args
 

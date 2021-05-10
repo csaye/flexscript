@@ -1,5 +1,9 @@
 def upper(s): return f'{s[0].upper()}{s[1:]}'
 
+def get_function(function):
+    if function == 'print': return 'Console.WriteLine'
+    else: return upper(function)
+
 def compile_cs(outpath, commands):
 
     program = ''
@@ -26,22 +30,24 @@ def compile_cs(outpath, commands):
         args = command.args
 
         # append spacing
-        program += '    ' * spaces
+        if type != 'bracket-end': program += '    ' * spaces
+        else: program += '    ' * (spaces - 1)
 
         if type == 'function-call':
-            function = args[0]
-            if function == 'print':
-                program += f'Console.WriteLine({args[1]});'
-            else:
-                program += f'{upper(args[0])}({", ".join(args[1:])});'
-        elif type == 'var-create':
-            program += f'{args[0]} {args[1]};'
-        elif type == 'var-set':
-            program += f'{args[0]} {args[1]} = {args[2]};'
-        elif type == 'var-update':
-            program += f'{args[0]} = {args[1]};'
-        elif type == 'comment':
-            program += f'// {args[0]}'
+            function = get_function(args[0])
+            program += f'{function}({", ".join(args[1:])});'
+        elif type == 'var-create': program += f'{args[0]} {args[1]};'
+        elif type == 'var-set': program += f'{args[0]} {args[1]} = {args[2]};'
+        elif type == 'var-update': program += f'{" ".join(args)};'
+        elif type == 'comment': program += f'// {args[0]}'
+        elif type == 'statement-args': program += f'{args[0]} ({args[1]})'
+        elif type == 'statement-else': program += 'else'
+        elif type == 'bracket-start':
+            program += '{'
+            spaces += 1
+        elif type == 'bracket-end':
+            program += '}'
+            spaces -= 1
 
         program += '\n'
 

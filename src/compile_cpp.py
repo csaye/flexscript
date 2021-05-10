@@ -26,7 +26,8 @@ def compile_cpp(outpath, commands):
         args = command.args
 
         # append spacing
-        program += '    ' * spaces
+        if type != 'bracket-end': program += '    ' * spaces
+        else: program += '    ' * (spaces - 1)
 
         if type == 'function-call':
             function = args[0]
@@ -40,10 +41,16 @@ def compile_cpp(outpath, commands):
         elif type == 'var-set':
             vartype = get_vartype(args[0])
             program += f'{vartype} {args[1]} = {args[2]};'
-        elif type == 'var-update':
-            program += f'{args[0]} = {args[1]};'
-        elif type == 'comment':
-            program += f'// {args[0]}'
+        elif type == 'var-update': program += f'{" ".join(args)};'
+        elif type == 'comment': program += f'// {args[0]}'
+        elif type == 'statement-args': program += f'{args[0]} ({args[1]})'
+        elif type == 'statement-else': program += 'else'
+        elif type == 'bracket-start':
+            program += '{'
+            spaces += 1
+        elif type == 'bracket-end':
+            program += '}'
+            spaces -= 1
 
         program += '\n'
 
