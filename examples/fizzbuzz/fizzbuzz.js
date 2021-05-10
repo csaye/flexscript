@@ -1,6 +1,4 @@
-i = 1;
-
-while (i <= 100)
+for (i = 1; i < 101; i++)
 {
     output = "";
     
@@ -21,6 +19,4 @@ while (i <= 100)
     {
         console.log(output);
     }
-    
-    i += 1;
 }

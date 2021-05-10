@@ -4,7 +4,6 @@ import re
 s0 = '\s*' # optional whitespace
 s1 = '\s+' # whitespace
 name = '[a-zA-Z][a-zA-Z0-9]*' # variable name
-num = '[0-9][0-9]*' # number
 any0 = '.*' # optional any character
 any1 = '.+' # any character
 modo = '(=|\+=|-=|\*=|\/=|%=)' # modification operators
@@ -16,7 +15,7 @@ actions = {
     f'{name}{s0}{modo}{any1};': 'var-update',
     f'#{any0}\n': 'comment',
     f'(if|elif|while){s0}\({any1}\)': 'statement-args',
-    f'for{s0}\(int{s1}{name}{s0}={s0}{num}{s0};{s0}{name}{s0}<{s0}{num}{s0};{s0}{name}\+\+{s0}\)': 'statement-for',
+    f'for{s0}\(int{s1}{name}{s0}={s0}{any1}{s0};{s0}{name}{s0}<{s0}{any1}{s0};{s0}{name}\+\+{s0}\)': 'statement-for',
     'else': 'statement-else',
     '{': 'bracket-start',
     '}': 'bracket-end'

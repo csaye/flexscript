@@ -121,9 +121,7 @@ while (i < 10)
 Prints numbers 1 to 100 (inclusive) to the console, replacing every multiple of 3 with "Fizz", every multiple of 5 with "Buzz", and every multiple of both with "FizzBuzz".
 
 ```cs
-int i = 1;
-
-while (i <= 100)
+for (int i = 1; i < 101; i++)
 {
     string output = "";
 
@@ -144,8 +142,6 @@ while (i <= 100)
     {
         print(output);
     }
-
-    i += 1;
 }
 ```
 
@@ -154,30 +150,22 @@ while (i <= 100)
 Prints all prime numbers up to 100 to the console.
 
 ```cs
-int i = 2;
-int j = 2;
-
-while (i < 100)
+for (int i = 2; i < 100; i++)
 {
     bool prime = true;
-    j = 2;
 
-    while (j < i)
+    for (int j = 2; j < i; i++)
     {
         if (i % j == 0)
         {
             prime = false;
         }
-
-        j += 1;
     }
 
     if (prime)
     {
         print(i);
     }
-
-    i += 1;
 }
 ```
 

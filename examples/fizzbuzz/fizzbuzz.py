@@ -1,6 +1,4 @@
-i = 1
-
-while i <= 100:
+for i in range(1, 101):
     output = ""
     
     if i % 3 == 0:
@@ -12,5 +10,3 @@ while i <= 100:
         print(i)
     else:
         print(output)
-    
-    i += 1

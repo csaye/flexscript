@@ -4,9 +4,7 @@ class Program
 {
     static void Main()
     {
-        int i = 1;
-        
-        while (i <= 100)
+        for (int i = 1; i < 101; i++)
         {
             string output = "";
             
@@ -27,8 +25,6 @@ class Program
             {
                 Console.WriteLine(output);
             }
-            
-            i += 1;
         }
     }
 }

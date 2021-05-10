@@ -1,6 +1,4 @@
-int i = 1;
-
-while (i <= 100)
+for (int i = 1; i < 101; i++)
 {
     string output = "";
 
@@ -21,6 +19,4 @@ while (i <= 100)
     {
         print(output);
     }
-
-    i += 1;
 }
