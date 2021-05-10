@@ -57,7 +57,17 @@ bool e = false;
 
 Conditional statements are written in the form `statement (condition) {}`.
 
+`for` statements:
+
+```cs
+for (int i = 0; i < 10; i++)
+{
+    print(i);
+}
+```
+
 `while` statements:
+
 ```cs
 int i = 0;
 
@@ -69,6 +79,7 @@ while (i < 10)
 ```
 
 `if/elif/else` statements:
+
 ```py
 if (false)
 {
@@ -86,7 +97,26 @@ else
 
 ## Examples
 
-`FizzBuzz.flex`
+[Fibonacci.flex](examples/fibonacci.flex)
+
+Prints the first 10 numbers of the Fibonacci sequence to the console.
+
+```cs
+int a = -1;
+int b = 1;
+int i = 0;
+
+while (i < 10)
+{
+    int c = a + b;
+    a = b;
+    b = c;
+    print(c);
+    i += 1;
+}
+```
+
+[FizzBuzz.flex](examples/fizzbuzz.flex)
 
 Prints numbers 1 to 100 (inclusive) to the console, replacing every multiple of 3 with "Fizz", every multiple of 5 with "Buzz", and every multiple of both with "FizzBuzz".
 
@@ -113,6 +143,38 @@ while (i <= 100)
     else
     {
         print(output);
+    }
+
+    i += 1;
+}
+```
+
+[Primes.flex](examples/primes.flex)
+
+Prints all prime numbers up to 100 to the console.
+
+```cs
+int i = 2;
+int j = 2;
+
+while (i < 100)
+{
+    bool prime = true;
+    j = 2;
+
+    while (j < i)
+    {
+        if (i % j == 0)
+        {
+            prime = false;
+        }
+
+        j += 1;
+    }
+
+    if (prime)
+    {
+        print(i);
     }
 
     i += 1;
