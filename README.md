@@ -43,7 +43,7 @@ print("Hello World");
 
 Variables can be defined as `type varname = value;` and updated as `varname = newvalue;`
 
-`int`, `double`, `char`, `string`, and `bool` types are supported for all languages.
+`int`, `double`, `char`, `string`, and `bool` types are supported for all languages:
 
 ```cs
 int a = 1;
@@ -104,15 +104,13 @@ Prints the first 10 numbers of the Fibonacci sequence to the console.
 ```cs
 int a = -1;
 int b = 1;
-int i = 0;
 
-while (i < 10)
+for (int i = 0; i < 10; i++)
 {
     int c = a + b;
     a = b;
     b = c;
     print(c);
-    i += 1;
 }
 ```
 
