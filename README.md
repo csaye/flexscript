@@ -77,7 +77,7 @@ helloworld();
 
 Conditional statements are written in the form `statement (condition) {}`.
 
-`for` statements:
+`for(int varname = low; varname < high; varname++)` statements:
 
 ```cs
 for (int i = 0; i < 10; i++)
@@ -180,6 +180,7 @@ for (int i = 2; i < 100; i++)
         if (i % j == 0)
         {
             prime = false;
+            break;
         }
     }
 

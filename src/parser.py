@@ -31,9 +31,6 @@ class Command:
         self.type = type
         self.args = args
 
-    type = ''
-    args = []
-
 # splits a string by given chars, keeping string literals together
 def split(string, chars):
 

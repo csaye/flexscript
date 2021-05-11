@@ -10,6 +10,6 @@ factorial(n)
     }
 }
 
-n = 7;
-f = factorial(n);
+let n = 7;
+let f = factorial(n);
 console.log(f);
