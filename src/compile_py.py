@@ -21,15 +21,20 @@ def compile_py(outpath, commands):
         if type not in skip_types: program += '    ' * spaces
 
         if type == 'function-def':
-            program += f'def {args[1]}({", ".join(args[2:])}):'
+            params = [' '.join(arg.split()[1:]) for arg in args[2:]]
+            program += f'def {args[1]}({", ".join(params)}):'
         elif type == 'function-call':
             program += f'{args[0]}({", ".join(args[1:])})'
         elif type == 'var-set': program += f'{args[1]} = {args[2]}'
         elif type == 'var-update': program += ' '.join(args)
         elif type == 'comment': program += f'# {args[0]}'
         elif type == 'statement-args': program += f'{args[0]} {args[1]}:'
-        elif type == 'statement-for': program += f'for {args[0]} in range({args[1]}, {args[2]}):'
-        elif type == 'statement-else': program += 'else:'
+        elif type == 'statement-for':
+            program += f'for {args[0]} in range({args[1]}, {args[2]}):'
+        elif type == 'statement-raw':
+            if args[0] == 'else': program += 'else:'
+            else: program += args[0][0:-1]
+        elif type == 'statement-return': program += f'return{args[0]}'
         elif type == 'bracket-start': spaces += 1
         elif type == 'bracket-end': spaces -= 1
 

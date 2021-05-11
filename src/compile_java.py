@@ -35,7 +35,8 @@ def compile_java(outpath, commands):
         elif type not in skip_types: program += '    ' * spaces
 
         if type == 'function-def':
-            program += f'static {args[0]} {args[1]}({", ".join(args[2:])})'
+            vartype = get_vartype(args[0])
+            program += f'static {vartype} {args[1]}({", ".join(args[2:])})'
         elif type == 'function-call':
             function = get_function(args[0])
             program += f'{function}({", ".join(args[1:])});'
@@ -57,7 +58,8 @@ def compile_java(outpath, commands):
             program += f'{statement} ({args[1]})'
         elif type == 'statement-for':
             program += f'for (int {args[0]} = {args[1]}; {args[0]} < {args[2]}; {args[0]}++)'
-        elif type == 'statement-else': program += 'else'
+        elif type == 'statement-raw': program += args[0]
+        elif type == 'statement-return': program += f'return{args[0]};'
         elif type == 'bracket-start':
             program += '{'
             spaces += 1

@@ -1,6 +1,13 @@
+import re
+
 skip_types = ['declaration']
 
 def upper(s): return f'{s[0].upper()}{s[1:]}'
+
+def style_function(match_obj):
+    name = match_obj.group(1)
+    content = match_obj.group(2)
+    return f'{upper(name)}({content})'
 
 def get_function(function):
     if function == 'print': return 'Console.WriteLine'
@@ -33,6 +40,16 @@ def compile_cs(outpath, commands):
         type = command.type
         args = command.args
 
+        # capitalize function names
+        args = [
+            re.sub(
+                '([a-zA-Z][a-zA-Z0-9]*)\s*\((.*)\)',
+                style_function,
+                arg
+            )
+            for arg in args
+        ]
+
         # append spacing
         if type == 'bracket-end': program += '    ' * (spaces - 1)
         elif type not in skip_types: program += '    ' * spaces
@@ -56,7 +73,8 @@ def compile_cs(outpath, commands):
             program += f'{statement} ({args[1]})'
         elif type == 'statement-for':
             program += f'for (int {args[0]} = {args[1]}; {args[0]} < {args[2]}; {args[0]}++)'
-        elif type == 'statement-else': program += 'else'
+        elif type == 'statement-raw': program += args[0]
+        elif type == 'statement-return': program += f'return{args[0]};'
         elif type == 'bracket-start':
             program += '{'
             spaces += 1

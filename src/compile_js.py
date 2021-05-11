@@ -24,7 +24,8 @@ def compile_js(outpath, commands):
         elif type not in skip_types: program += '    ' * spaces
 
         if type == 'function-def':
-            program += f'{args[1]}({", ".join(args[2:])})'
+            params = [' '.join(arg.split()[1:]) for arg in args[2:]]
+            program += f'{args[1]}({", ".join(params)})'
         elif type == 'function-call':
             function = get_function(args[0])
             program += f'{function}({", ".join(args[1:])});'
@@ -36,7 +37,8 @@ def compile_js(outpath, commands):
             program += f'{statement} ({args[1]})'
         elif type == 'statement-for':
             program += f'for ({args[0]} = {args[1]}; {args[0]} < {args[2]}; {args[0]}++)'
-        elif type == 'statement-else': program += 'else'
+        elif type == 'statement-raw': program += args[0]
+        elif type == 'statement-return': program += f'return{args[0]};'
         elif type == 'bracket-start':
             program += '{'
             spaces += 1

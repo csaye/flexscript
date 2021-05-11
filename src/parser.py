@@ -9,6 +9,7 @@ any1 = '.+' # any character
 modo = '(=|\+=|-=|\*=|\/=|%=)' # modification operators
 
 actions = {
+    f'return{any0};': 'statement-return',
     f'{name}{s1}{name}{s0}\({any0}\){s0}\n': 'function-def',
     f'{name}{s0}\({any0}\){s0};': 'function-call',
     f'{name}{s1}{name}{s0};': 'var-create',
@@ -18,7 +19,7 @@ actions = {
     f'#_{any0}\n': 'declaration',
     f'(if|elif|while){s0}\({any1}\)': 'statement-args',
     f'for{s0}\(int{s1}{name}{s0}={s0}{any1}{s0};{s0}{name}{s0}<{s0}{any1}{s0};{s0}{name}\+\+{s0}\)': 'statement-for',
-    'else': 'statement-else',
+    '(else|continue;|break;)': 'statement-raw',
     '{': 'bracket-start',
     '}': 'bracket-end'
 }
@@ -115,6 +116,11 @@ def get_args(type, string):
         terms = split(content, '=<; ') # split inside
         args.append(terms[2]) # append lower bound
         args.append(terms[4]) # append upper bound
+    elif type == 'statement-raw':
+        args.append(string.strip()) # append stripped statement
+    elif type == 'statement-return':
+        content = string[6:-1].rstrip() # strip content on right
+        args.append(content) # append content
 
     return args
 
@@ -126,6 +132,7 @@ def parse(program):
     # for each character in program
     in_string = False
     double_quote = False
+    in_comment = False
     string = ''
     for char in program:
 
