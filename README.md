@@ -44,11 +44,23 @@ Variables can be defined as `type varname = value;` and updated as `varname = ne
 `int`, `double`, `char`, `string`, and `bool` types are supported for all languages:
 
 ```cs
+#_MAIN
 int a = 1;
 double b = 0.5;
 char c = 'a';
 string d = "Hello World";
 bool e = false;
+```
+
+## Arrays
+
+Arrays can be defined as `type[] varname = [];` and updated as `varname[index] = newvalue;`
+
+```cs
+#_MAIN
+int[] array = [1, 2, 3];
+array[1] = 3;
+print(array[1]);
 ```
 
 ## Functions
@@ -58,6 +70,7 @@ Function calls are written in `function();` syntax with any arguments separated 
 The `print` function is built-in and supported for all languages:
 
 ```cs
+#_MAIN
 print("Hello World");
 ```
 
@@ -80,6 +93,7 @@ Conditional statements are written in the form `statement (condition) {}`.
 `for(int varname = low; varname < high; varname++)` statements:
 
 ```cs
+#_MAIN
 for (int i = 0; i < 10; i++)
 {
     print(i);
@@ -89,6 +103,7 @@ for (int i = 0; i < 10; i++)
 `while` statements:
 
 ```cs
+#_MAIN
 int i = 0;
 
 while (i < 10)
@@ -101,6 +116,7 @@ while (i < 10)
 `if/elif/else` statements:
 
 ```py
+#_MAIN
 if (false)
 {
     print("false");
