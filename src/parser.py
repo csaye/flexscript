@@ -6,6 +6,7 @@ s1 = '\s+' # whitespace
 name = '[a-zA-Z][a-zA-Z0-9]*' # variable name
 any0 = '.*' # optional any character
 any1 = '.+' # any character
+num = '[0-9]+' # number
 modo = '(=|\+=|-=|\*=|\/=|%=)' # modification operators
 
 actions = {
@@ -15,6 +16,8 @@ actions = {
     f'{name}{s1}{name}{s0};': 'var-create',
     f'{name}{s1}{name}{s0}={any1};': 'var-set',
     f'{name}{s0}{modo}{any1};': 'var-update',
+    f'{name}\[{s0}\]{s0}{name}{s0}={s0}\[{any0}\]{s0};': 'array-set',
+    f'{name}{s0}\[{num}\]{s0}{modo}{any1};': 'array-update',
     f'(#|#[^_]{any0})\n': 'comment',
     f'#_{any0}\n': 'declaration',
     f'(if|elif|while){s0}\({any1}\)': 'statement-args',
@@ -95,6 +98,17 @@ def get_args(type, string):
         sides = split(string, ';=+-*/%') # get both sides of assignment
         args.append(sides[0].strip()) # strip left side
         args.append(op) # append operator
+        args.append(sides[1].strip()) # strip right side
+    elif type == 'array-set':
+        sides = split(string, '=;') # get both sides of assignment
+        args = split(sides[0], '[] ') # get array type and name
+        if len(sides) > 1:
+            content = sides[1].strip()[1:-1].strip() # get stripped content
+            terms = split(content, ',') # split content
+            for term in terms: args.append(term.strip()) # append stripped terms
+    elif type == 'array-update':
+        sides = split(string, ';=+-*/%') # get both sides of assignment
+        args = split(sides[0], '[] ') # get array name and index
         args.append(sides[1].strip()) # strip right side
     elif type == 'comment':
         content = string[1:].strip() # get comment content

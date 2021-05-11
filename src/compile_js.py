@@ -1,4 +1,4 @@
-skip_types = ['var-create', 'declaration']
+skip_types = ['declaration']
 
 def get_function(function):
     if function == 'print': return 'console.log'
@@ -29,8 +29,11 @@ def compile_js(outpath, commands):
         elif type == 'function-call':
             function = get_function(args[0])
             program += f'{function}({", ".join(args[1:])});'
-        elif type == 'var-set': program += f'let {args[1]} = {args[2]};'
+        elif type == 'var-create': f'var {args[1]};'
+        elif type == 'var-set': program += f'var {args[1]} = {args[2]};'
         elif type == 'var-update': program += f'{" ".join(args)};'
+        elif type == 'array-set': program += f'var {args[1]} = [{", ".join(args[2:])}];'
+        elif type == 'array-update': program += f'{args[0]}[{args[1]}] = {args[2]};'
         elif type == 'comment': program += f'// {args[0]}'
         elif type == 'statement-args':
             statement = get_statement(args[0])

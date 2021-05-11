@@ -46,6 +46,10 @@ def compile_cpp(outpath, commands):
             vartype = get_vartype(args[0])
             program += f'{vartype} {args[1]} = {args[2]};'
         elif type == 'var-update': program += f'{" ".join(args)};'
+        elif type == 'array-set':
+            vartype = get_vartype(args[0])
+            program += f'{vartype}[] {args[1]} = {{ {", ".join(args[2:])} }};'
+        elif type == 'array-update': program += f'{args[0]}[{args[1]}] = {args[2]};'
         elif type == 'comment': program += f'// {args[0]}'
         elif type == 'declaration':
             if args[0] == 'MAIN':
