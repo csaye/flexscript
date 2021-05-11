@@ -11,6 +11,7 @@ int main()
             if (i % j == 0)
             {
                 prime = false;
+                break;
             }
         }
         

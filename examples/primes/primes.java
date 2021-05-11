@@ -11,6 +11,7 @@ public class Main
                 if (i % j == 0)
                 {
                     prime = false;
+                    break;
                 }
             }
             

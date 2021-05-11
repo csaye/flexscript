@@ -1,10 +1,15 @@
-n = 7;
-f = 1;
-
-while (n > 1)
+factorial(n)
 {
-    f *= n;
-    n -= 1;
+    if (n < 2)
+    {
+        return n;
+    }
+    else
+    {
+        return n * factorial(n - 1);
+    }
 }
 
+n = 7;
+f = factorial(n);
 console.log(f);

@@ -1,11 +1,16 @@
-#_MAIN
-int n = 7;
-int f = 1;
-
-while (n > 1)
+int factorial(int n)
 {
-    f *= n;
-    n -= 1;
+    if (n < 2)
+    {
+        return n;
+    }
+    else
+    {
+        return n * factorial(n - 1);
+    }
 }
 
+#_MAIN
+int n = 7;
+int f = factorial(n);
 print(f);
