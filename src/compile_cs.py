@@ -6,7 +6,7 @@ def upper(s): return f'{s[0].upper()}{s[1:]}'
 
 def get_function(function, content):
     if function == 'print': return f'Console.WriteLine({content})'
-    elif function == 'len': return f'{content}.Length'
+    elif function == 'alen' or function == 'slen': return f'{content}.Length'
     else: return f'{upper(function)}({content})'
 
 def style_function(match_obj):

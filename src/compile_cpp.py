@@ -12,7 +12,7 @@ def get_statement(statement):
 
 def get_function(function, content):
     if function == 'print': return f'std::cout << {content} << std::endl'
-    elif function == 'len': return f'std::size({content})'
+    elif function == 'alen' or function == 'slen': return f'std::size({content})'
     else: return f'{function}({content})'
 
 def style_function(match_obj):

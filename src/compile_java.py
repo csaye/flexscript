@@ -13,7 +13,8 @@ def get_statement(statement):
 
 def get_function(function, content):
     if function == 'print': return f'System.out.println({content})'
-    elif function == 'len': return f'{content}.length'
+    elif function == 'alen': return f'{content}.length'
+    elif function == 'slen': return f'{content}.length()'
     else: return f'{function}({content})'
 
 def style_function(match_obj):

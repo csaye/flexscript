@@ -1,4 +1,15 @@
+import re
+
 skip_types = ['var-create', 'array-create', 'bracket-start', 'bracket-end', 'declaration']
+
+def get_function(function, content):
+    if function == 'slen' or function == 'alen': return f'len({content})'
+    else: return f'{function}({content})'
+
+def style_function(match_obj):
+    function = match_obj.group(1)
+    content = match_obj.group(2)
+    return get_function(function, content)
 
 def compile_py(outpath, commands):
 
@@ -11,9 +22,16 @@ def compile_py(outpath, commands):
         type = command.type
         args = command.args
 
+        # update boolean names
         args = [
             arg if '"' in arg else
             arg.replace('false', 'False').replace('true', 'True')
+            for arg in args
+        ]
+
+        # update function names
+        args = [
+            re.sub('([a-zA-Z][a-zA-Z0-9]*)\s*\((.*)\)', style_function, arg)
             for arg in args
         ]
 
@@ -26,7 +44,7 @@ def compile_py(outpath, commands):
         elif type == 'function-call':
             function = args[0]
             content = ", ".join(args[1:])
-            program += f'{function}({content})'
+            program += get_function(function, content)
         elif type == 'var-set': program += f'{args[1]} = {args[2]}'
         elif type == 'var-update': program += ' '.join(args)
         elif type == 'array-set': program += f'{args[1]} = [{", ".join(args[2:])}]'
