@@ -23,6 +23,7 @@ actions = {
     f'#_{any0}\n': 'declaration',
     f'(if|elif|while){s0}\({any1}\)': 'statement-args',
     f'for{s0}\(int{s1}{name}{s0}={s0}{any1}{s0};{s0}{name}{s0}<{s0}{any1}{s0};{s0}{name}\+\+{s0}\)': 'statement-for',
+    f'foreach{s0}\({s0}{name}{s1}{name}{s1}in{s1}{name}{s0}\)': 'statement-foreach',
     '(else|continue;|break;)': 'statement-raw',
     '{': 'bracket-start',
     '}': 'bracket-end'
@@ -140,6 +141,13 @@ def get_args(type, string):
         terms = split(content, '=<; ') # split inside
         args.append(terms[2]) # append lower bound
         args.append(terms[4]) # append upper bound
+    elif type == 'statement-foreach':
+        # foreach (int num in array)
+        sides = split(string, '()') # split foreach from content
+        content = sides[1].strip() # get content
+        terms = split(content, ' ') # split content by whitespace
+        del terms[2] # remove in keyword
+        args = terms # set terms as arguments
     elif type == 'statement-raw':
         args.append(string.strip()) # append stripped statement
     elif type == 'statement-return':

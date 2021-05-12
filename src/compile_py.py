@@ -34,6 +34,8 @@ def compile_py(outpath, commands):
         elif type == 'statement-args': program += f'{args[0]} {args[1]}:'
         elif type == 'statement-for':
             program += f'for {args[0]} in range({args[1]}, {args[2]}):'
+        elif type == 'statement-foreach':
+            program += f'for {args[1]} in {args[2]}:'
         elif type == 'statement-raw':
             if args[0] == 'else': program += 'else:'
             else: program += args[0][0:-1]

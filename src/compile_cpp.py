@@ -64,6 +64,9 @@ def compile_cpp(outpath, commands):
             program += f'{statement} ({args[1]})'
         elif type == 'statement-for':
             program += f'for (int {args[0]} = {args[1]}; {args[0]} < {args[2]}; {args[0]}++)'
+        elif type == 'statement-foreach':
+            vartype = get_vartype(args[0])
+            program += f'for ({vartype} {args[1]} : {args[2]})'
         elif type == 'statement-raw': program += args[0]
         elif type == 'statement-return': program += f'return{args[0]};'
         elif type == 'bracket-start':

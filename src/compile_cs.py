@@ -79,6 +79,8 @@ def compile_cs(outpath, commands):
             program += f'{statement} ({args[1]})'
         elif type == 'statement-for':
             program += f'for (int {args[0]} = {args[1]}; {args[0]} < {args[2]}; {args[0]}++)'
+        elif type == 'statement-foreach':
+            program += f'foreach ({args[0]} {args[1]} in {args[2]})'
         elif type == 'statement-raw': program += args[0]
         elif type == 'statement-return': program += f'return{args[0]};'
         elif type == 'bracket-start':
