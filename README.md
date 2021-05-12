@@ -21,6 +21,12 @@ Then compile your .flex file like so:
 ./compile.sh <program.flex> <py | js | cs | java | cpp | all>
 ```
 
+If necessary, give permission to execute `compile.sh`:
+
+```
+chmod +x compile.sh
+```
+
 ## Comments
 
 Comments are written with hashtags and translated to all languages:
@@ -44,7 +50,6 @@ Variables can be defined with `type varname;` or `type varname = value;` and upd
 `int`, `double`, `char`, `string`, and `bool` types are supported for all languages:
 
 ```cs
-#_MAIN
 int a = 1;
 double b = 0.5;
 char c = 'a';
@@ -59,7 +64,6 @@ Arrays can be defined with `type[] varname;` or `type[] varname = {};`
 Arrays can be updated with `varname = type {};` and `varname[index] = value;`
 
 ```cs
-#_MAIN
 int[] unset;
 unset = int { 1, 2, 3 };
 int[] array = { 1, 2, 3 };
@@ -74,7 +78,6 @@ Function calls are written in `function();` syntax with any arguments separated 
 The `print` function is built-in and supported for all languages:
 
 ```cs
-#_MAIN
 print("Hello World");
 ```
 
@@ -94,33 +97,9 @@ helloworld();
 
 Conditional statements are written in the form `statement (condition) {}`.
 
-`for(int varname = low; varname < high; varname++)` statements:
-
-```cs
-#_MAIN
-for (int i = 0; i < 10; i++)
-{
-    print(i);
-}
-```
-
-`while` statements:
-
-```cs
-#_MAIN
-int i = 0;
-
-while (i < 10)
-{
-    print(i);
-    i += 1;
-}
-```
-
-`if/elif/else` statements:
+`if/elif/else (condition)` statements:
 
 ```py
-#_MAIN
 if (false)
 {
     print("false");
@@ -135,11 +114,52 @@ else
 }
 ```
 
+`while (condition)` statements:
+
+```cs
+int i = 0;
+
+while (i < 10)
+{
+    print(i);
+    i += 1;
+}
+```
+
+`for (int varname = low; varname < high; varname++)` statements:
+
+```cs
+for (int i = 0; i < 10; i++)
+{
+    print(i);
+}
+```
+
+`foreach (type varname in varname) statements`:
+
+```cs
+int[] array = { 1, 2, 3 };
+
+foreach (int num in array)
+{
+    print(num);
+}
+```
+
 ## Examples
+
+[HelloWorld.flex](examples/helloworld.flex)
+
+Prints "Hello World".
+
+```cs
+#_MAIN
+print("Hello World");
+```
 
 [Fibonacci.flex](examples/fibonacci.flex)
 
-Prints the first 10 numbers of the Fibonacci sequence to the console.
+Prints the first 10 numbers of the Fibonacci sequence.
 
 ```cs
 #_MAIN
@@ -157,7 +177,7 @@ for (int i = 0; i < 10; i++)
 
 [FizzBuzz.flex](examples/fizzbuzz.flex)
 
-Prints numbers 1 to 100 (inclusive) to the console, replacing every multiple of 3 with "Fizz", every multiple of 5 with "Buzz", and every multiple of both with "FizzBuzz".
+Prints numbers 1 to 100 (inclusive), replacing every multiple of 3 with "Fizz", every multiple of 5 with "Buzz", and every multiple of both with "FizzBuzz".
 
 ```cs
 #_MAIN
@@ -187,7 +207,7 @@ for (int i = 1; i < 101; i++)
 
 [Primes.flex](examples/primes.flex)
 
-Prints all prime numbers up to 100 to the console.
+Prints all prime numbers up to 100.
 
 ```cs
 #_MAIN
@@ -209,6 +229,29 @@ for (int i = 2; i < 100; i++)
         print(i);
     }
 }
+```
+
+[Factorial.flex](examples/factorial.flex)
+
+Computes and prints the factorial of n using recursion.
+
+```cs
+int factorial(int n)
+{
+    if (n < 2)
+    {
+        return n;
+    }
+    else
+    {
+        return n * factorial(n - 1);
+    }
+}
+
+#_MAIN
+int n = 7;
+int f = factorial(n);
+print(f);
 ```
 
 More examples can be found in the [examples folder](examples).
