@@ -1,12 +1,20 @@
-skip_types = ['declaration']
+import re
 
-def get_function(function):
-    if function == 'print': return 'console.log'
-    else: return function
+skip_types = ['declaration']
 
 def get_statement(statement):
     if statement == 'elif': return 'else if'
     else: return statement
+
+def get_function(function, content):
+    if function == 'print': return f'console.log({content})'
+    elif function == 'len': return f'{content}.length'
+    else: return f'{function}({content})'
+
+def style_function(match_obj):
+    function = match_obj.group(1)
+    content = match_obj.group(2)
+    return get_function(function, content)
 
 def compile_js(outpath, commands):
 
@@ -19,16 +27,23 @@ def compile_js(outpath, commands):
         type = command.type
         args = command.args
 
+        # update function names
+        args = [
+            re.sub('([a-zA-Z][a-zA-Z0-9]*)\s*\((.*)\)', style_function, arg)
+            for arg in args
+        ]
+
         # append spacing
         if type == 'bracket-end': program += '    ' * (spaces - 1)
         elif type not in skip_types: program += '    ' * spaces
 
         if type == 'function-def':
             params = [' '.join(arg.split()[1:]) for arg in args[2:]]
-            program += f'{args[1]}({", ".join(params)})'
+            program += f'function {args[1]}({", ".join(params)})'
         elif type == 'function-call':
-            function = get_function(args[0])
-            program += f'{function}({", ".join(args[1:])});'
+            function = args[0]
+            content = ", ".join(args[1:])
+            program += f'{get_function(function, content)};'
         elif type == 'var-create': f'var {args[1]};'
         elif type == 'var-set': program += f'var {args[1]} = {args[2]};'
         elif type == 'var-update': program += f'{" ".join(args)};'
@@ -41,9 +56,9 @@ def compile_js(outpath, commands):
             statement = get_statement(args[0])
             program += f'{statement} ({args[1]})'
         elif type == 'statement-for':
-            program += f'for (let {args[0]} = {args[1]}; {args[0]} < {args[2]}; {args[0]}++)'
+            program += f'for (var {args[0]} = {args[1]}; {args[0]} < {args[2]}; {args[0]}++)'
         elif type == 'statement-foreach':
-            program += f'for ({args[1]} in {args[2]})'
+            program += f'for (var {args[1]} of {args[2]})'
         elif type == 'statement-raw': program += args[0]
         elif type == 'statement-return': program += f'return{args[0]};'
         elif type == 'bracket-start':

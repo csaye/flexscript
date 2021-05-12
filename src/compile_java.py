@@ -1,3 +1,5 @@
+import re
+
 skip_types = ['declaration']
 
 def get_vartype(vartype):
@@ -5,13 +7,19 @@ def get_vartype(vartype):
     elif vartype == 'bool': return 'boolean'
     else: return vartype
 
-def get_function(function):
-    if function == 'print': return 'System.out.println'
-    else: return function
-
 def get_statement(statement):
     if statement == 'elif': return 'else if'
     else: return statement
+
+def get_function(function, content):
+    if function == 'print': return f'System.out.println({content})'
+    elif function == 'len': return f'{content}.length'
+    else: return f'{function}({content})'
+
+def style_function(match_obj):
+    function = match_obj.group(1)
+    content = match_obj.group(2)
+    return get_function(function, content)
 
 def compile_java(outpath, commands):
 
@@ -30,6 +38,12 @@ def compile_java(outpath, commands):
         type = command.type
         args = command.args
 
+        # update function names
+        args = [
+            re.sub('([a-zA-Z][a-zA-Z0-9]*)\s*\((.*)\)', style_function, arg)
+            for arg in args
+        ]
+
         # append spacing
         if type == 'bracket-end': program += '    ' * (spaces - 1)
         elif type not in skip_types: program += '    ' * spaces
@@ -38,8 +52,9 @@ def compile_java(outpath, commands):
             vartype = get_vartype(args[0])
             program += f'static {vartype} {args[1]}({", ".join(args[2:])})'
         elif type == 'function-call':
-            function = get_function(args[0])
-            program += f'{function}({", ".join(args[1:])});'
+            function = args[0]
+            content = ", ".join(args[1:])
+            program += f'{get_function(function, content)};'
         elif type == 'var-create':
             vartype = get_vartype(args[0])
             program += f'{vartype} {args[1]};'

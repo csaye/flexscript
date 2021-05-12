@@ -1,3 +1,5 @@
+import re
+
 skip_types = ['array-create', 'declaration']
 
 def get_vartype(vartype):
@@ -7,6 +9,21 @@ def get_vartype(vartype):
 def get_statement(statement):
     if statement == 'elif': return 'else if'
     else: return statement
+
+def get_function(function, content):
+    if function == 'print': return f'std::cout << {content} << std::endl'
+    elif function == 'len': return f'std::size({content})'
+    else: return f'{function}({content})'
+
+def style_function(match_obj):
+    function = match_obj.group(1)
+    content = match_obj.group(2)
+    return get_function(function, content)
+
+def style_array(match_obj):
+    vartype = match_obj.group(1)
+    varname = match_obj.group(2)
+    return f'{vartype} {varname}[]'
 
 def compile_cpp(outpath, commands):
 
@@ -26,6 +43,23 @@ def compile_cpp(outpath, commands):
         type = command.type
         args = command.args
 
+        # update function names
+        args = [
+            re.sub('([a-zA-Z][a-zA-Z0-9]*)\s*\((.*)\)', style_function, arg)
+            for arg in args
+        ]
+
+        # update array variable styling
+        # int[] array -> int array[]
+        args = [
+            re.sub(
+                f'([a-zA-Z][a-zA-Z0-9]*)\s*\[\s*\]\s*([a-zA-Z][a-zA-Z0-9]*)',
+                style_array,
+                arg
+            )
+            for arg in args
+        ]
+
         # append spacing
         if type == 'bracket-end': program += '    ' * (spaces - 1)
         elif type not in skip_types: program += '    ' * spaces
@@ -35,10 +69,8 @@ def compile_cpp(outpath, commands):
             program += f'{vartype} {args[1]}({", ".join(args[2:])})'
         elif type == 'function-call':
             function = args[0]
-            if function == 'print':
-                program += f'std::cout << {args[1]} << std::endl;'
-            else:
-                program += f'{args[0]}({", ".join(args[1:])});'
+            content = ", ".join(args[1:])
+            program += f'{get_function(function, content)};'
         elif type == 'var-create':
             vartype = get_vartype(args[0])
             program += f'{vartype} {args[1]};'

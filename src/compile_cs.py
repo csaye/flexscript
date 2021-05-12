@@ -4,14 +4,15 @@ skip_types = ['declaration']
 
 def upper(s): return f'{s[0].upper()}{s[1:]}'
 
-def style_function(match_obj):
-    name = match_obj.group(1)
-    content = match_obj.group(2)
-    return f'{upper(name)}({content})'
+def get_function(function, content):
+    if function == 'print': return f'Console.WriteLine({content})'
+    elif function == 'len': return f'{content}.Length'
+    else: return f'{upper(function)}({content})'
 
-def get_function(function):
-    if function == 'print': return 'Console.WriteLine'
-    else: return upper(function)
+def style_function(match_obj):
+    function = match_obj.group(1)
+    content = match_obj.group(2)
+    return get_function(function, content)
 
 def get_statement(statement):
     if statement == 'elif': return 'else if'
@@ -40,13 +41,9 @@ def compile_cs(outpath, commands):
         type = command.type
         args = command.args
 
-        # capitalize function names
+        # update function names
         args = [
-            re.sub(
-                '([a-zA-Z][a-zA-Z0-9]*)\s*\((.*)\)',
-                style_function,
-                arg
-            )
+            re.sub('([a-zA-Z][a-zA-Z0-9]*)\s*\((.*)\)', style_function, arg)
             for arg in args
         ]
 
@@ -57,8 +54,9 @@ def compile_cs(outpath, commands):
         if type == 'function-def':
             program += f'static {args[0]} {upper(args[1])}({", ".join(args[2:])})'
         elif type == 'function-call':
-            function = get_function(args[0])
-            program += f'{function}({", ".join(args[1:])});'
+            function = args[0]
+            content = ", ".join(args[1:])
+            program += f'{get_function(function, content)};'
         elif type == 'var-create': program += f'{args[0]} {args[1]};'
         elif type == 'var-set': program += f'{args[0]} {args[1]} = {args[2]};'
         elif type == 'var-update': program += f'{" ".join(args)};'

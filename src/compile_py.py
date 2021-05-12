@@ -24,7 +24,9 @@ def compile_py(outpath, commands):
             params = [' '.join(arg.split()[1:]) for arg in args[2:]]
             program += f'def {args[1]}({", ".join(params)}):'
         elif type == 'function-call':
-            program += f'{args[0]}({", ".join(args[1:])})'
+            function = args[0]
+            content = ", ".join(args[1:])
+            program += f'{function}({content})'
         elif type == 'var-set': program += f'{args[1]} = {args[2]}'
         elif type == 'var-update': program += ' '.join(args)
         elif type == 'array-set': program += f'{args[1]} = [{", ".join(args[2:])}]'
