@@ -39,7 +39,7 @@ If a comment begins with an underscore, it is parsed as a declaration:
 
 ## Variables
 
-Variables can be defined as `type varname = value;` and updated as `varname = newvalue;`
+Variables can be defined with `type varname;` or `type varname = value;` and updated with `varname = value;`
 
 `int`, `double`, `char`, `string`, and `bool` types are supported for all languages:
 
@@ -54,12 +54,16 @@ bool e = false;
 
 ## Arrays
 
-Arrays can be defined as `type[] varname = [];` and updated as `varname[index] = newvalue;`
+Arrays can be defined with `type[] varname;` or `type[] varname = {};`
+
+Arrays can be updated with `varname = type {};` and `varname[index] = value;`
 
 ```cs
 #_MAIN
-int[] array = [1, 2, 3];
-array[1] = 3;
+int[] unset;
+unset = int { 1, 2, 3 };
+int[] array = { 1, 2, 3 };
+array[1] = 0;
 print(array[1]);
 ```
 
