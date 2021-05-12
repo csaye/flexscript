@@ -1,4 +1,4 @@
-skip_types = ['var-create', 'bracket-start', 'bracket-end', 'declaration']
+skip_types = ['var-create', 'array-create', 'bracket-start', 'bracket-end', 'declaration']
 
 def compile_py(outpath, commands):
 
@@ -28,7 +28,8 @@ def compile_py(outpath, commands):
         elif type == 'var-set': program += f'{args[1]} = {args[2]}'
         elif type == 'var-update': program += ' '.join(args)
         elif type == 'array-set': program += f'{args[1]} = [{", ".join(args[2:])}]'
-        elif type == 'array-update': program += f'{args[0]}[{args[1]}] = {args[2]}'
+        elif type == 'array-update': program += f'{args[0]} = [{", ".join(args[2:])}]'
+        elif type == 'array-index-update': program += f'{args[0]}[{args[1]}] = {args[2]}'
         elif type == 'comment': program += f'# {args[0]}'
         elif type == 'statement-args': program += f'{args[0]} {args[1]}:'
         elif type == 'statement-for':

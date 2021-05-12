@@ -6,18 +6,19 @@ s1 = '\s+' # whitespace
 name = '[a-zA-Z][a-zA-Z0-9]*' # variable name
 any0 = '.*' # optional any character
 any1 = '.+' # any character
-num = '[0-9]+' # number
 modo = '(=|\+=|-=|\*=|\/=|%=)' # modification operators
 
 actions = {
     f'return{any0};': 'statement-return',
     f'{name}{s1}{name}{s0}\({any0}\){s0}\n': 'function-def',
     f'{name}{s0}\({any0}\){s0};': 'function-call',
+    f'{name}{s0}\[{s0}\]{s0}{name}{s0};': 'array-create',
+    f'{name}{s0}\[{s0}\]{s0}{name}{s0}={s0}{"{"}{any0}{"}"}{s0};': 'array-set',
+    f'{name}{s0}={s0}{name}{s0}{"{"}{any0}{"}"}{s0};': 'array-update',
+    f'{name}{s0}\[{any1}\]{s0}{modo}{any1};': 'array-index-update',
     f'{name}{s1}{name}{s0};': 'var-create',
     f'{name}{s1}{name}{s0}={any1};': 'var-set',
     f'{name}{s0}{modo}{any1};': 'var-update',
-    f'{name}\[{s0}\]{s0}{name}{s0}={s0}\[{any0}\]{s0};': 'array-set',
-    f'{name}{s0}\[{num}\]{s0}{modo}{any1};': 'array-update',
     f'(#|#[^_]{any0})\n': 'comment',
     f'#_{any0}\n': 'declaration',
     f'(if|elif|while){s0}\({any1}\)': 'statement-args',
@@ -99,14 +100,26 @@ def get_args(type, string):
         args.append(sides[0].strip()) # strip left side
         args.append(op) # append operator
         args.append(sides[1].strip()) # strip right side
+    elif type == 'array-create':
+        # int[] array;
+        args = split(string, '[]; ') # split terms by semicolon and whitespace
     elif type == 'array-set':
+        # int[] array = { 1, 2, 3 };
         sides = split(string, '=;') # get both sides of assignment
         args = split(sides[0], '[] ') # get array type and name
-        if len(sides) > 1:
-            content = sides[1].strip()[1:-1].strip() # get stripped content
-            terms = split(content, ',') # split content
-            for term in terms: args.append(term.strip()) # append stripped terms
+        content = sides[1].strip()[1:-1].strip() # get stripped content
+        terms = split(content, ',') # split content
+        for term in terms: args.append(term.strip()) # append stripped terms
     elif type == 'array-update':
+        # array = int { 1, 2, 3 };
+        sides = split(string, '=;') # get both sides of assignment
+        args.append(sides[0].strip()) # append array name
+        content = split(sides[1], '{}') # separate type from content
+        args.append(content[0].strip()) # append type
+        terms = split(content[1].strip(), ',') # get terms
+        for term in terms: args.append(term.strip()) # append stripped terms
+    elif type == 'array-index-update':
+        # array[0] = 0;
         sides = split(string, ';=+-*/%') # get both sides of assignment
         args = split(sides[0], '[] ') # get array name and index
         args.append(sides[1].strip()) # strip right side
@@ -147,6 +160,9 @@ def parse(program):
     string = ''
     for char in program:
 
+        # toggle in comment
+        if char == '#' and not in_string: in_comment = True
+
         # toggle in string
         if in_string:
             if ((char == '"' and double_quote)
@@ -157,12 +173,23 @@ def parse(program):
                 double_quote = char == '"'
                 in_string = True
 
+        # if newline, reset in string and in comment
+        if char == '\n':
+            in_string = False
+            in_comment = False
+
         string += char # build string
         if in_string: continue # skip if in string
         clean_string = string.strip() # strip string
 
         # for each action
         for action in actions:
+
+            # if in comment
+            if in_comment:
+
+                # skip action if not comment or declaration
+                if action != 'comment' and action != 'declaration': continue
 
             # if string matches action
             if re.match(f'^{s0}{action}{s0}$', string):

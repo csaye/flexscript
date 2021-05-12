@@ -62,9 +62,12 @@ def compile_cs(outpath, commands):
         elif type == 'var-create': program += f'{args[0]} {args[1]};'
         elif type == 'var-set': program += f'{args[0]} {args[1]} = {args[2]};'
         elif type == 'var-update': program += f'{" ".join(args)};'
+        elif type == 'array-create': program += f'{args[0]}[] {args[1]};'
         elif type == 'array-set':
             program += f'{args[0]}[] {args[1]} = {{ {", ".join(args[2:])} }};'
-        elif type == 'array-update': program += f'{args[0]}[{args[1]}] = {args[2]};'
+        elif type == 'array-update':
+            program += f'{args[0]} = new {args[1]}[] {{ {", ".join(args[2:])} }};'
+        elif type == 'array-index-update': program += f'{args[0]}[{args[1]}] = {args[2]};'
         elif type == 'comment': program += f'// {args[0]}'
         elif type == 'declaration':
             if args[0] == 'MAIN':

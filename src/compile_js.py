@@ -32,8 +32,10 @@ def compile_js(outpath, commands):
         elif type == 'var-create': f'var {args[1]};'
         elif type == 'var-set': program += f'var {args[1]} = {args[2]};'
         elif type == 'var-update': program += f'{" ".join(args)};'
+        elif type == 'array-create': program += f'var {args[1]};'
         elif type == 'array-set': program += f'var {args[1]} = [{", ".join(args[2:])}];'
-        elif type == 'array-update': program += f'{args[0]}[{args[1]}] = {args[2]};'
+        elif type == 'array-update': program += f'{args[0]} = [{", ".join(args[2:])}];'
+        elif type == 'array-index-update': program += f'{args[0]}[{args[1]}] = {args[2]};'
         elif type == 'comment': program += f'// {args[0]}'
         elif type == 'statement-args':
             statement = get_statement(args[0])

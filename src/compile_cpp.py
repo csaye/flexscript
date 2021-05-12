@@ -1,4 +1,4 @@
-skip_types = ['declaration']
+skip_types = ['array-create', 'declaration']
 
 def get_vartype(vartype):
     if vartype == 'string': return 'std::string'
@@ -48,8 +48,11 @@ def compile_cpp(outpath, commands):
         elif type == 'var-update': program += f'{" ".join(args)};'
         elif type == 'array-set':
             vartype = get_vartype(args[0])
-            program += f'{vartype}[] {args[1]} = {{ {", ".join(args[2:])} }};'
-        elif type == 'array-update': program += f'{args[0]}[{args[1]}] = {args[2]};'
+            program += f'{vartype} {args[1]}[] = {{ {", ".join(args[2:])} }};'
+        elif type == 'array-update':
+            vartype = get_vartype(args[1])
+            program += f'{vartype} {args[0]}[] = {{ {", ".join(args[2:])} }};'
+        elif type == 'array-index-update': program += f'{args[0]}[{args[1]}] = {args[2]};'
         elif type == 'comment': program += f'// {args[0]}'
         elif type == 'declaration':
             if args[0] == 'MAIN':
