@@ -1,6 +1,6 @@
 var array = [1, 2, 3];
 
-for (num in array)
+for (var num of array)
 {
     console.log(num);
 }

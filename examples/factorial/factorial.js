@@ -1,4 +1,4 @@
-factorial(n)
+function factorial(n)
 {
     if (n < 2)
     {
@@ -10,6 +10,6 @@ factorial(n)
     }
 }
 
-let n = 7;
-let f = factorial(n);
+var n = 7;
+var f = factorial(n);
 console.log(f);

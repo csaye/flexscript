@@ -1,9 +1,9 @@
-let a = -1;
-let b = 1;
+var a = -1;
+var b = 1;
 
-for (let i = 0; i < 10; i++)
+for (var i = 0; i < 10; i++)
 {
-    let c = a + b;
+    var c = a + b;
     a = b;
     b = c;
     console.log(c);

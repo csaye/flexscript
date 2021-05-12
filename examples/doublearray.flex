@@ -9,7 +9,7 @@ void doublearray(int[] array, int size)
 
 #_MAIN
 int[] nums = { 1, 2, 3 };
-int size = len(nums);
+int size = alen(nums);
 doublearray(nums, size);
 
 foreach (int num in nums)

@@ -1,8 +1,8 @@
-for (let i = 2; i < 100; i++)
+for (var i = 2; i < 100; i++)
 {
-    let prime = true;
+    var prime = true;
     
-    for (let j = 2; j < i; j++)
+    for (var j = 2; j < i; j++)
     {
         if (i % j == 0)
         {
