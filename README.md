@@ -75,10 +75,11 @@ print(array[1]);
 
 Function calls are written in `function();` syntax with any arguments separated by commas.
 
-The `print` function is built-in and supported for all languages:
+`print` and `len` functions are built-in and supported for all languages:
 
 ```cs
 print("Hello World");
+int size = len(array);
 ```
 
 Function definitions are written in `type function() {}` syntax and should be done before `#_MAIN`:
@@ -252,6 +253,31 @@ int factorial(int n)
 int n = 7;
 int f = factorial(n);
 print(f);
+```
+
+[DoubleArray.flex](examples/doublearray.flex)
+
+Doubles an integer array using a function and prints the results.
+
+```cs
+void doublearray(int[] array, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        int newvalue = array[i] * 2;
+        array[i] = newvalue;
+    }
+}
+
+#_MAIN
+int[] nums = { 1, 2, 3 };
+int size = len(nums);
+doublearray(nums, size);
+
+foreach (int num in nums)
+{
+    print(num);
+}
 ```
 
 More examples can be found in the [examples folder](examples).
