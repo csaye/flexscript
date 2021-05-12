@@ -73,14 +73,7 @@ print(array[1]);
 
 ## Functions
 
-Function calls are written in `function();` syntax with any arguments separated by commas.
-
-`print` and `len` functions are built-in and supported for all languages:
-
-```cs
-print("Hello World");
-int size = len(array);
-```
+Function calls are written in `function();` syntax with arguments separated by commas.
 
 Function definitions are written in `type function() {}` syntax and should be done before `#_MAIN`:
 
@@ -92,6 +85,28 @@ void helloworld()
 
 #_MAIN
 helloworld();
+```
+
+Certain functions are built-in:
+
+`print`: outputs arguments to the console
+
+```cs
+print("Hello World");
+```
+
+`slen`: returns length of given string
+
+```cs
+string s = "Hello World";
+int size = slen(s);
+```
+
+`alen`: returns length of given array
+
+```cs
+int[] array = { 1, 2, 3 };
+int size = alen(array);
 ```
 
 ## Conditional Statements
@@ -136,7 +151,7 @@ for (int i = 0; i < 10; i++)
 }
 ```
 
-`foreach (type varname in varname) statements`:
+`foreach (type varname in varname)` statements:
 
 ```cs
 int[] array = { 1, 2, 3 };
@@ -271,7 +286,7 @@ void doublearray(int[] array, int size)
 
 #_MAIN
 int[] nums = { 1, 2, 3 };
-int size = len(nums);
+int size = alen(nums);
 doublearray(nums, size);
 
 foreach (int num in nums)
